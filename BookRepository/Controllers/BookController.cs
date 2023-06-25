@@ -1,6 +1,8 @@
 ﻿using BookRepository.Models;
 using BookRepository.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Linq.Expressions;
 
 namespace BookRepository.Controllers
@@ -14,7 +16,6 @@ namespace BookRepository.Controllers
         }
         public IActionResult Index()
         {
-            var book = new BookModel();
             return View();
         }
 
@@ -30,7 +31,7 @@ namespace BookRepository.Controllers
             try
             {
                 _bookManager.AddBook(book);
-                return RedirectToAction("Index");
+                return RedirectToAction("BookList");
             }
             catch (Exception ex)
             {
@@ -38,10 +39,38 @@ namespace BookRepository.Controllers
             }   
         }
 
-        public IActionResult BookList()
+        public IActionResult BookList(string sortOrder,
+            string currentFilter)
         {
-            var books = _bookManager.GetBooks();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["AuthorSortParm"] = String.IsNullOrEmpty(sortOrder) ? "author_desc" : "";
+            ViewData["TitleSortParm"] = sortOrder == "title" ? "title_desc" : "title";
+
+            ViewData["CurrentFilter"] = currentFilter;
+
+            var books = from b in _bookManager.GetBooks()
+                           select b;
+            if (!String.IsNullOrEmpty(currentFilter))
+            {
+                books = books.Where(b => b.Genre.Contains(currentFilter));
+            }
+            switch (sortOrder)
+            {
+                case "author_desc":
+                    books = books.OrderByDescending(b => b.Author);
+                    break;
+                case "title":
+                    books = books.OrderBy(b => b.Title);
+                    break;
+                case "title_desc":
+                    books = books.OrderByDescending(b => b.Title);
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Author);
+                    break;
+            }
             return View(books);
+
         }
 
         [HttpGet]

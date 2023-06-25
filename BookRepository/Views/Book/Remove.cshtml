@@ -4,10 +4,9 @@
     ViewData["Title"] = "Remove";
 }
 
-<h1>Remove</h1>
+<h1>Remove the book</h1>
 
 <div>
-    <h4>BookModel</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -36,7 +35,9 @@
         </dd>
     </dl>
 </div>
-<form asp-action="RemoveConfirm" asp-route-id="@Model?.Id">
+<form asp-action="RemoveConfirm" asp-route-id="@Model?.Id" class="mb-2">
     <button class="btn btn-danger">Remove</button>
-    <a asp-action="BookList">Back to List</a>
 </form>
+<div>
+    <a asp-action="BookList">Back to List</a>
+</div>

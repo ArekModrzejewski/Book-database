@@ -4,22 +4,34 @@
     ViewData["Title"] = "BookList";
 }
 
-<h1>BookList</h1>
+<h1>List of all books</h1>
 
 <p>
     <a asp-action="Add">Add new book</a>
 </p>
+<form asp-action="BookList" method="get" class="input-group mb-2">
+    <select class="form-select" name="currentFilter" aria-label="Default select example">
+        <option value="" selected>All</option>
+        <option value="Unspecified">Unspecified</option>
+        <option value="Fiction">Fiction</option>
+        <option value="Nonfiction">Nonfiction</option>
+        <option value="Drama">Drama</option>
+        <option value="Poetry">Poetry</option>
+        <option value="Folktale">Folktale</option>
+    </select>
+    <input type="submit" value="Search" class="btn btn-success" />
+</form>
 <table class="table table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                <a asp-action="BookList" asp-route-sortOrder="@ViewData["TitleSortParm"]">@Html.DisplayNameFor(model => model.Title)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Genre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                <a asp-action="BookList" asp-route-sortOrder="@ViewData["AuthorSortParm"]">@Html.DisplayNameFor(model => model.Author)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsRead)
